@@ -1,4 +1,4 @@
-package com.bupt.starmap.model;
+package com.bupt.starmap.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Data
@@ -21,10 +23,15 @@ public class Stargazer implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = AUTO)
     private Long id;
+    private String name;
     private String username;
     private String password;
     private String email;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
