@@ -11,5 +11,4 @@ public interface StargazerService {
     void addRoleToStargazer(String username, String roleName);
     Stargazer getStargazer(String username);
     List<Stargazer> getStargazers();
-
 }

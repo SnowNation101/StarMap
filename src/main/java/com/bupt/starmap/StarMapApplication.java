@@ -24,31 +24,29 @@ public class StarMapApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	CommandLineRunner run(StargazerService stargazerService) {
-		return args -> {
-			stargazerService.saveRole(new Role(null, "ROLE_USER"));
-			stargazerService.saveRole(new Role(null, "ROLE_MANAGER"));
-			stargazerService.saveRole(new Role(null, "ROLE_ADMIN"));
-			stargazerService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
-
-			stargazerService.saveStargazer(new Stargazer(null, "zch", "2020211696",
-					"123456", new ArrayList<>()));
-			stargazerService.saveStargazer(new Stargazer(null, "hyt", "2020211700",
-					"123456", new ArrayList<>()));
-			stargazerService.saveStargazer(new Stargazer(null, "xph", "2020211694",
-					"123456", new ArrayList<>()));
-			stargazerService.saveStargazer(new Stargazer(null, "xbx", "2020211695",
-					"123456", new ArrayList<>()));
-
-			stargazerService.addRoleToStargazer("2020211696", "ROLE_USER");
-			stargazerService.addRoleToStargazer("2020211696", "ROLE_ADMIN");
-			stargazerService.addRoleToStargazer("2020211700", "ROLE_ADMIN");
-			stargazerService.addRoleToStargazer("2020211694", "ROLE_MANAGER");
-			stargazerService.addRoleToStargazer("2020211695", "ROLE_SUPER_ADMIN");
-
-
-		};
-	}
+//	@Bean
+//	CommandLineRunner run(StargazerService stargazerService) {
+//		return args -> {
+//			stargazerService.saveRole(new Role(null, "ROLE_USER"));
+//			stargazerService.saveRole(new Role(null, "ROLE_MANAGER"));
+//			stargazerService.saveRole(new Role(null, "ROLE_ADMIN"));
+//			stargazerService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
+//
+//			stargazerService.saveStargazer(new Stargazer(null, "zch", "2020211696",
+//					"123456", new ArrayList<>()));
+//			stargazerService.saveStargazer(new Stargazer(null, "hyt", "2020211700",
+//					"123456", new ArrayList<>()));
+//			stargazerService.saveStargazer(new Stargazer(null, "xph", "2020211694",
+//					"123456", new ArrayList<>()));
+//			stargazerService.saveStargazer(new Stargazer(null, "xbx", "2020211695",
+//					"123456", new ArrayList<>()));
+//
+//			stargazerService.addRoleToStargazer("2020211696", "ROLE_USER");
+//			stargazerService.addRoleToStargazer("2020211696", "ROLE_ADMIN");
+//			stargazerService.addRoleToStargazer("2020211700", "ROLE_ADMIN");
+//			stargazerService.addRoleToStargazer("2020211694", "ROLE_MANAGER");
+//			stargazerService.addRoleToStargazer("2020211695", "ROLE_SUPER_ADMIN");
+//		};
+//	}
 
 }
