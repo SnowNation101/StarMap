@@ -1,8 +1,5 @@
 package com.bupt.starmap;
 
-import com.bupt.starmap.domain.Role;
-import com.bupt.starmap.service.UserService;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -12,14 +9,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class StarMapApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StarMapApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(StarMapApplication.class, args);
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 //	@Bean
 //	CommandLineRunner run(UserService userService) {

@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface NodeService {
     List<Node> getNodes(String username);
+
     List<Node> saveNodes(List<Node> nodes);
 }

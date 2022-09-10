@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class NoteServiceImpl implements NoteService{
+public class NoteServiceImpl implements NoteService {
 
     private NoteRepo noteRepo;
 

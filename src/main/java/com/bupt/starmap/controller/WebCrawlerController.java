@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,9 +21,10 @@ import java.util.concurrent.TimeUnit;
 public class WebCrawlerController {
     @Autowired
     WebCrawlerRepo webCrawlerRepo;
+
     @GetMapping("/crawl")
-    public void crawl(){
-        System.getProperties().setProperty("webdriver.chrome.driver","../../../resources/chromedriver.exe");
+    public void crawl() {
+        System.getProperties().setProperty("webdriver.chrome.driver", "../../../resources/chromedriver.exe");
         System.out.println("准备实例化ChromeOpen类");
 
         //防反爬
@@ -97,30 +97,30 @@ public class WebCrawlerController {
             WebElement a = article.findElement(By.cssSelector("h3 a"));
             String text = a.getText();
             String href = a.getAttribute("href");
-            System.out.println(num + ": " + text+" = "+href);
+            System.out.println(num + ": " + text + " = " + href);
 
             WebElement datablock = article.findElement(By.className("btm-lt"));
             String view = datablock.findElement(By.className("btm-view")).findElement(By.className("num")).getText();
 
             String like = "";
             By by = new By.ByClassName("btm-dig");
-            if(this.isExist(datablock,by)){
+            if (this.isExist(datablock, by)) {
                 like = datablock.findElement(By.className("btm-dig")).findElement(By.className("num")).getText();
-            } else{
+            } else {
                 like = "0";
             }
 
             String comment = "";
             by = new By.ByClassName("btm-comment");
-            if(this.isExist(datablock, by)){
+            if (this.isExist(datablock, by)) {
                 comment = datablock.findElement(By.className("btm-comment")).findElement(By.className("num")).getText();
-            } else{
+            } else {
                 comment = "0";
             }
             System.out.println("view:" + view + " like: " + like + " comment: " + comment);
 
             //插入数据
-            webCrawlerRepo.save(new WebCrawler(null,text,href,view,like,comment));
+            webCrawlerRepo.save(new WebCrawler(null, text, href, view, like, comment));
             log.info("Saved url {}", webCrawlerRepo.count());
 
             try {
@@ -128,7 +128,7 @@ public class WebCrawlerController {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if(webCrawlerRepo.count() == 20) break;
+            if (webCrawlerRepo.count() == 20) break;
         }
 
         try {
