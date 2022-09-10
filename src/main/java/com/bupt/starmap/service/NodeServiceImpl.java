@@ -21,4 +21,9 @@ public class NodeServiceImpl implements NodeService {
     public List<Node> getNodes(String username) {
         return nodeRepo.findAllByUsername(username);
     }
+
+    @Override
+    public List<Node> saveNodes(List<Node> nodes) {
+        return nodeRepo.saveAll(nodes);
+    }
 }
