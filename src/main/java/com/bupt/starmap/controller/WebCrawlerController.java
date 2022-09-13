@@ -89,8 +89,6 @@ public class WebCrawlerController {
         WebElement content = chromeDriver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div[1]/div[2]/div"));
         List<WebElement> articleCards = content.findElements(By.cssSelector(".so-items-normal"));
 
-        int num = 0;
-
         //删除原表的数据
         webCrawlerRepo.deleteAll();
 
@@ -98,7 +96,7 @@ public class WebCrawlerController {
             WebElement a = article.findElement(By.cssSelector("h3 a"));
             String text = a.getText();
             String href = a.getAttribute("href");
-            System.out.println(num + ": " + text + " = " + href);
+            log.info(webCrawlerRepo.count() + ": " + text + " = " + href);
 
             WebElement datablock = article.findElement(By.className("btm-lt"));
             String view = datablock.findElement(By.className("btm-view")).findElement(By.className("num")).getText();
@@ -137,7 +135,7 @@ public class WebCrawlerController {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+        log.info("Web crawling finished");
         chromeDriver.quit();
     }
 
@@ -147,7 +145,7 @@ public class WebCrawlerController {
             remoteWebDriver.findElement(by);
             return true;
         } catch (Exception e) {
-            System.out.println("不存在此元素");
+            log.error("Element not found");
             return false;
         }
     }
