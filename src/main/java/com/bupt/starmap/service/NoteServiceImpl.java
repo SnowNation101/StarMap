@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -18,6 +19,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note saveNote(Note note) {
+        note.setCreateTime(LocalDateTime.now());
         log.info("Save new note {} to the database", note.getTitle());
         return noteRepo.save(note);
     }

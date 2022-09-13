@@ -6,13 +6,13 @@ import com.bupt.starmap.domain.User;
 import java.util.List;
 
 public interface UserService {
-    User saveUser(User user);
+  User saveUser(User user);
 
-    Role saveRole(Role role);
+  Role saveRole(Role role);
 
-    User getUser(String username);
+  User getUser(String username);
 
-    void addRoleToUser(String username, String roleName);
+  void addRoleToUser(String username, String roleName);
 
-    List<User> getUsers();
+  List<User> getUsers();
 }

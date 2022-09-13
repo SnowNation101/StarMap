@@ -15,22 +15,17 @@ import java.util.List;
 @Transactional
 public class NodeServiceImpl implements NodeService {
 
-    private final NodeRepo nodeRepo;
+  private final NodeRepo nodeRepo;
 
-    @Override
-    public List<Node> getNodes(String username) {
-        return nodeRepo.findAllByUsername(username);
-    }
+  @Override
+  public List<Node> getNodes(String username) {
+    return nodeRepo.findAllByUsername(username);
+  }
 
-    @Override
-    public List<Node> saveNodes(List<Node> nodes) {
-        nodeRepo.deleteAll();
-        return nodeRepo.saveAll(nodes);
-    }
-
-    @Override
-    public void deleteNode(Long nodeId) {
-        nodeRepo.deleteByNodeId(nodeId);
-    }
+  @Override
+  public List<Node> saveNodes(List<Node> nodes, String username) {
+    nodeRepo.deleteAllByUsername(username);
+    return nodeRepo.saveAll(nodes);
+  }
 
 }

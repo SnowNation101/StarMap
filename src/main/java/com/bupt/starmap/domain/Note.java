@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.AUTO;
 
@@ -16,12 +16,13 @@ import static javax.persistence.GenerationType.AUTO;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Note {
-    @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long noteId;
-    private String title;
-    private Date createTime;
-    private String content;
-    private String category;
+  @Id
+  @GeneratedValue(strategy = AUTO)
+  private Long noteId;
+  private String username;
+  private String title;
+  private LocalDateTime createTime;
+  private String content;
+  private String category;
 
 }

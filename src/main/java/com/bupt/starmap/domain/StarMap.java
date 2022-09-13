@@ -16,10 +16,10 @@ import static javax.persistence.GenerationType.AUTO;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StarMap {
-    @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long mapId;
-    private String username;
-    private String current;
-    private Date editTime;
+  @Id
+  @GeneratedValue(strategy = AUTO)
+  private Long mapId;
+  private String username;
+  private String current;
+  private Date editTime;
 }

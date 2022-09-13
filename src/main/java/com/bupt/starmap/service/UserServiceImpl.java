@@ -24,60 +24,60 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private final UserRepo stargazerRepo;
-    private final RoleRepo roleRepo;
-    private final PasswordEncoder passwordEncoder;
+  private final UserRepo stargazerRepo;
+  private final RoleRepo roleRepo;
+  private final PasswordEncoder passwordEncoder;
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = stargazerRepo.findByUsername(username);
-        if (user == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
-        } else {
-            log.info("User found in the database: {}", username);
-        }
-
-        Collection<SimpleGrantedAuthority> authorites = new ArrayList<>();
-        user.getRoles().forEach(role -> {
-            authorites.add(new SimpleGrantedAuthority(role.getName()));
-        });
-        return new org.springframework.security.core.userdetails
-                .User(user.getUsername(), user.getPassword(), authorites);
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    User user = stargazerRepo.findByUsername(username);
+    if (user == null) {
+      log.error("User not found in the database");
+      throw new UsernameNotFoundException("User not found in the database");
+    } else {
+      log.info("User found in the database: {}", username);
     }
 
-    @Override
-    public User saveUser(User user) {
-        log.info("Save new user {} to the database", user.getUsername());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return stargazerRepo.save(user);
-    }
+    Collection<SimpleGrantedAuthority> authorites = new ArrayList<>();
+    user.getRoles().forEach(role -> {
+      authorites.add(new SimpleGrantedAuthority(role.getName()));
+    });
+    return new org.springframework.security.core.userdetails
+        .User(user.getUsername(), user.getPassword(), authorites);
+  }
 
-    @Override
-    public Role saveRole(Role role) {
-        log.info("Save new role {} to the database", role.getName());
-        return roleRepo.save(role);
-    }
+  @Override
+  public User saveUser(User user) {
+    log.info("Save new user {} to the database", user.getUsername());
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    return stargazerRepo.save(user);
+  }
 
-    @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to stargazer {}", roleName, username);
-        User user = stargazerRepo.findByUsername(username);
-        Role role = roleRepo.findByName(roleName);
-        user.getRoles().add(role);
-    }
+  @Override
+  public Role saveRole(Role role) {
+    log.info("Save new role {} to the database", role.getName());
+    return roleRepo.save(role);
+  }
 
-    @Override
-    public User getUser(String username) {
-        log.info("Fetching stargazer {}", username);
-        return stargazerRepo.findByUsername(username);
-    }
+  @Override
+  public void addRoleToUser(String username, String roleName) {
+    log.info("Adding role {} to stargazer {}", roleName, username);
+    User user = stargazerRepo.findByUsername(username);
+    Role role = roleRepo.findByName(roleName);
+    user.getRoles().add(role);
+  }
 
-    @Override
-    public List<User> getUsers() {
-        log.info("Fetching all stargazers");
-        return stargazerRepo.findAll();
-    }
+  @Override
+  public User getUser(String username) {
+    log.info("Fetching stargazer {}", username);
+    return stargazerRepo.findByUsername(username);
+  }
+
+  @Override
+  public List<User> getUsers() {
+    log.info("Fetching all stargazers");
+    return stargazerRepo.findAll();
+  }
 
 }

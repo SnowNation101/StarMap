@@ -24,57 +24,57 @@ import static org.springframework.security.config.http.SessionCreationPolicy.IF_
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final UserDetailsService userDetailsService;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter
-                = new CustomAuthenticationFilter(authenticationManagerBean());
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-        http
-                .csrf().disable();
-        http
-                .sessionManagement().sessionCreationPolicy(IF_REQUIRED);
-        http
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    CustomAuthenticationFilter customAuthenticationFilter
+        = new CustomAuthenticationFilter(authenticationManagerBean());
+    customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+    http
+        .csrf().disable();
+    http
+        .sessionManagement().sessionCreationPolicy(IF_REQUIRED);
+    http
+        .authorizeRequests()
+        .antMatchers("/").permitAll()
+        .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
 //                .antMatchers(GET, "api/user/**").hasAnyAuthority("ROLE_USER")
 //                .antMatchers(POST, "api/user/save/**").hasAnyAuthority("ROLE_USER")
 //                .antMatchers(POST, "/starmap").permitAll()
 //                .antMatchers(POST, "/api/user/save").permitAll()
-                .antMatchers("/**").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .formLogin().loginPage("/login").permitAll()
-                .failureUrl("/login?error=true")
-                .defaultSuccessUrl("/starmap", true);
-        http
-                .rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
-                .key("somethingverysecured");
-        http
-                .logout()
-                .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
-    }
+        .antMatchers("/**").permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .addFilter(customAuthenticationFilter)
+        .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .formLogin().loginPage("/login").permitAll()
+        .failureUrl("/login?error=true")
+        .defaultSuccessUrl("/starmap", true);
+    http
+        .rememberMe()
+        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
+        .key("somethingverysecured");
+    http
+        .logout()
+        .logoutUrl("/logout")
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+        .clearAuthentication(true)
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID", "remember-me")
+        .logoutSuccessUrl("/login");
+  }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 }

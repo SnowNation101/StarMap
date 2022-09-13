@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NoteRepo extends JpaRepository<Note, Long> {
-    Note findByTitle(String title);
+  Note findByTitle(String title);
 }

@@ -16,15 +16,15 @@ import static javax.persistence.GenerationType.AUTO;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WebCrawler {
-    @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long crawlerId;
-    private String crawlerTitle;
-    @Column(columnDefinition = "varchar(511)")
-    private String url;
-    private String views;
-    private String likes;
-    private String comments;
+  @Id
+  @GeneratedValue(strategy = AUTO)
+  private Long crawlerId;
+  private String crawlerTitle;
+  @Column(columnDefinition = "varchar(511)")
+  private String url;
+  private String views;
+  private String likes;
+  private String comments;
 
 
 }
