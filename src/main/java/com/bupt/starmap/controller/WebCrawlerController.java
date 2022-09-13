@@ -96,7 +96,6 @@ public class WebCrawlerController {
             WebElement a = article.findElement(By.cssSelector("h3 a"));
             String text = a.getText();
             String href = a.getAttribute("href");
-            log.info(webCrawlerRepo.count() + ": " + text + " = " + href);
 
             WebElement datablock = article.findElement(By.className("btm-lt"));
             String view = datablock.findElement(By.className("btm-view")).findElement(By.className("num")).getText();
