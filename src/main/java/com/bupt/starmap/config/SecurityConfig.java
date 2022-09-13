@@ -17,7 +17,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
 
 @Configuration
 @EnableWebSecurity
@@ -37,9 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAuthenticationFilter customAuthenticationFilter
                 = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests()
+        http
+                .csrf().disable();
+        http
+                .sessionManagement().sessionCreationPolicy(IF_REQUIRED);
+        http
+                .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
 //                .antMatchers(GET, "api/user/**").hasAnyAuthority("ROLE_USER")
@@ -54,12 +57,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin().loginPage("/login").permitAll()
                 .failureUrl("/login?error=true")
-                .defaultSuccessUrl("/starmap", true)
-                .and()
-                .rememberMe().tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
-                .key("somethingverysecured")
-                .and()
-                .logout().logoutUrl("/logout")
+                .defaultSuccessUrl("/starmap", true);
+        http
+                .rememberMe()
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
+                .key("somethingverysecured");
+        http
+                .logout()
+                .logoutUrl("/logout")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)

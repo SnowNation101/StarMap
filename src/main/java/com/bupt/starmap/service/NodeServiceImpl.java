@@ -24,6 +24,13 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public List<Node> saveNodes(List<Node> nodes) {
+        nodeRepo.deleteAll();
         return nodeRepo.saveAll(nodes);
     }
+
+    @Override
+    public void deleteNode(Long nodeId) {
+        nodeRepo.deleteByNodeId(nodeId);
+    }
+
 }

@@ -8,4 +8,6 @@ public interface NodeService {
     List<Node> getNodes(String username);
 
     List<Node> saveNodes(List<Node> nodes);
+
+    void deleteNode(Long nodeId);
 }

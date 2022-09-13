@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface NodeRepo extends JpaRepository<Node, Long> {
     List<Node> findAllByUsername(String username);
+
+    void deleteByNodeId(Long nodeId);
 }
