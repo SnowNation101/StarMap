@@ -24,7 +24,8 @@ public class WebCrawlerController {
 
     @GetMapping("/crawl")
     public void crawl() {
-        System.getProperties().setProperty("webdriver.chrome.driver", "../../../resources/chromedriver.exe");
+
+        System.getProperties().setProperty("webdriver.chrome.driver", "./src/main/resources/chromedriver.exe");
         System.out.println("准备实例化ChromeOpen类");
 
         //防反爬
@@ -54,7 +55,7 @@ public class WebCrawlerController {
         }
 
         WebElement inputrect = chromeDriver.findElement(By.id("toolbar-search-input")); //找到输入的方框
-        inputrect.sendKeys("spring boot");
+        inputrect.sendKeys("java");
 
         WebElement searchbutton = chromeDriver.findElement(By.id("toolbar-search-button")); //点击搜索按钮
         searchbutton.click();
