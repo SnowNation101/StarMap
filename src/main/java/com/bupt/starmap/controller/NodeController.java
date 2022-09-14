@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/node")
+@RequestMapping("/api/node")
 @RequiredArgsConstructor
 public class NodeController {
 
@@ -33,6 +33,11 @@ public class NodeController {
         .fromCurrentContextPath().path("/node/post/{username}").toUriString());
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.created(uri).body(nodeService.saveNodes(nodes, username));
+  }
+
+  @GetMapping("/test")
+  public String test() {
+    return "fuck";
   }
 
 }

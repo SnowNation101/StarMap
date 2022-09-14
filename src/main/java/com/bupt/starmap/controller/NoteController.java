@@ -17,7 +17,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/note")
+@RequestMapping("/api/note")
 @RequiredArgsConstructor
 public class NoteController {
   @Autowired

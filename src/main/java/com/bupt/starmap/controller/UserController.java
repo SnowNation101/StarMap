@@ -33,11 +33,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
   private final UserService userService;
 
+  // Get all user information
   @GetMapping("/users")
   public ResponseEntity<List<User>> getUsers() {
     return ResponseEntity.ok().body(userService.getUsers());
   }
 
+  // Register (save new user)
   @PostMapping("/user/save")
   public ResponseEntity<User> saveUser(@RequestBody User user) {
     URI uri = URI.create(ServletUriComponentsBuilder
@@ -45,6 +47,16 @@ public class UserController {
     return ResponseEntity.created(uri).body(userService.saveUser(user));
   }
 
+  // TODO:
+  // Update user profile
+  @PostMapping("/user/update")
+  public ResponseEntity<User> updateUser(@RequestBody User user) {
+    URI uri = URI.create(ServletUriComponentsBuilder
+        .fromCurrentContextPath().path("/api/user/update").toUriString());
+    return ResponseEntity.created(uri).body(userService.saveUser(user));
+  }
+
+  // Save new role
   @PostMapping("/role/save")
   public ResponseEntity<Role> saveRole(@RequestBody Role role) {
     URI uri = URI.create(ServletUriComponentsBuilder
@@ -52,6 +64,7 @@ public class UserController {
     return ResponseEntity.created(uri).body(userService.saveRole(role));
   }
 
+  // Refresh token
   @GetMapping("/token/refresh")
   public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String authorizationHeader = request.getHeader(AUTHORIZATION);

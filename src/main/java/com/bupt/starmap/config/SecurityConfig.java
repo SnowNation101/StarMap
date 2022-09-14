@@ -14,7 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
@@ -38,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         = new CustomAuthenticationFilter(authenticationManagerBean());
     customAuthenticationFilter.setFilterProcessesUrl("/api/login");
     http
+        .cors()
+        .configurationSource(corsConfigurationSource())
+        .and()
         .csrf().disable();
     http
         .sessionManagement().sessionCreationPolicy(IF_REQUIRED);
@@ -57,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
         .formLogin().loginPage("/login").permitAll()
         .failureUrl("/login?error=true")
-        .defaultSuccessUrl("/starmap", true);
+        .defaultSuccessUrl("/api/users", true);
     http
         .rememberMe()
         .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
@@ -77,4 +85,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
   }
+
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+    configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+    configuration.setAllowCredentials(false);
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
+
 }

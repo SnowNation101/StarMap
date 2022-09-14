@@ -22,7 +22,8 @@ public class User implements UserDetails {
     @Id
     private String username;
     private String password;
-    private LocalDate dob;
+  private String nickname;
+  private LocalDate dob;
     private String phoneNo;
     private String mapId;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
