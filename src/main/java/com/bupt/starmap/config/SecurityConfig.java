@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
@@ -48,36 +48,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .csrf().disable();
     http
-        .sessionManagement().sessionCreationPolicy(IF_REQUIRED);
+        .sessionManagement().sessionCreationPolicy(STATELESS);
     http
         .authorizeRequests()
-        .antMatchers("/").permitAll()
-        .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
-//                .antMatchers(GET, "api/user/**").hasAnyAuthority("ROLE_USER")
-//                .antMatchers(POST, "api/user/save/**").hasAnyAuthority("ROLE_USER")
-//                .antMatchers(POST, "/starmap").permitAll()
-//                .antMatchers(POST, "/api/user/save").permitAll()
+//        .antMatchers("/").permitAll()
+//        .antMatchers("/api/user/register", "/api/logout").permitAll()
+//        .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
+//        .antMatchers("api/**").hasAnyAuthority("ROLE_USER")
+//        .antMatchers(GET, "api/user/**").hasAnyAuthority("ROLE_USER")
+//        .antMatchers(POST, "api/user/save/**").hasAnyAuthority("ROLE_USER")
+//        .antMatchers(POST, "/starmap").permitAll()
+//        .antMatchers(POST, "/api/user/save").permitAll()
+//        .antMatchers("/api/users").hasAnyAuthority("ROLE_USER")
         .antMatchers("/**").permitAll()
-        .anyRequest()
-        .authenticated()
+//        .antMatchers("/api/user/save").hasAnyAuthority("ROLE_USER")
+        .anyRequest().authenticated()
         .and()
         .addFilter(customAuthenticationFilter)
-        .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .formLogin().loginPage("/login").permitAll()
-        .failureUrl("/login?error=true")
-        .defaultSuccessUrl("/api/users", true);
+        .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     http
         .rememberMe()
-        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(20))
+        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(200))
         .key("somethingverysecured");
     http
         .logout()
-        .logoutUrl("/logout")
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+        .logoutUrl("/api/logout")
+        .logoutRequestMatcher(new AntPathRequestMatcher("/api/logout", "GET"))
         .clearAuthentication(true)
         .invalidateHttpSession(true)
-        .deleteCookies("JSESSIONID", "remember-me")
-        .logoutSuccessUrl("/login");
+        .deleteCookies("JSESSIONID", "remember-me");
   }
 
   @Bean
@@ -91,8 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
     configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-    configuration.setAllowCredentials(false);
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+    configuration.setAllowCredentials(false);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;

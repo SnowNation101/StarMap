@@ -24,5 +24,4 @@ public class Note {
   private LocalDateTime createTime;
   private String content;
   private String category;
-
 }

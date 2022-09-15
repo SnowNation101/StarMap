@@ -1,4 +1,4 @@
-package com.bupt.starmap.controller.request;
+package com.bupt.starmap.controller.utils;
 
 import lombok.Data;
 

@@ -14,30 +14,24 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/node")
 @RequiredArgsConstructor
 public class NodeController {
 
   private final NodeService nodeService;
 
-  @GetMapping("/get")
+  @GetMapping("/get/all")
   public List<Node> getNodes() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return nodeService.getNodes(username);
   }
 
-  @PostMapping("/save")
+  @PostMapping("/save/all")
   public ResponseEntity<List<Node>> saveNodes(@RequestBody List<Node> nodes) {
     URI uri = URI.create(ServletUriComponentsBuilder
-        .fromCurrentContextPath().path("/node/post/{username}").toUriString());
+        .fromCurrentContextPath().path("/save/all").toUriString());
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.created(uri).body(nodeService.saveNodes(nodes, username));
-  }
-
-  @GetMapping("/test")
-  public String test() {
-    return "fuck";
   }
 
 }

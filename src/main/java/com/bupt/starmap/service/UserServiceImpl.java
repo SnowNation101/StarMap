@@ -24,14 +24,14 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-  private final UserRepo stargazerRepo;
+  private final UserRepo userRepo;
   private final RoleRepo roleRepo;
   private final PasswordEncoder passwordEncoder;
 
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = stargazerRepo.findByUsername(username);
+    User user = userRepo.findByUsername(username);
     if (user == null) {
       log.error("User not found in the database");
       throw new UsernameNotFoundException("User not found in the database");
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public User saveUser(User user) {
     log.info("Save new user {} to the database", user.getUsername());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    return stargazerRepo.save(user);
+    return userRepo.save(user);
   }
 
   @Override
@@ -62,22 +62,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public void addRoleToUser(String username, String roleName) {
-    log.info("Adding role {} to stargazer {}", roleName, username);
-    User user = stargazerRepo.findByUsername(username);
+    log.info("Adding role {} to user {}", roleName, username);
+    User user = userRepo.findByUsername(username);
     Role role = roleRepo.findByName(roleName);
     user.getRoles().add(role);
   }
 
   @Override
   public User getUser(String username) {
-    log.info("Fetching stargazer {}", username);
-    return stargazerRepo.findByUsername(username);
+    log.info("Fetching user {}", username);
+    return userRepo.findByUsername(username);
   }
 
   @Override
   public List<User> getUsers() {
-    log.info("Fetching all stargazers");
-    return stargazerRepo.findAll();
+    log.info("Fetching all users");
+    return userRepo.findAll();
   }
 
 }
