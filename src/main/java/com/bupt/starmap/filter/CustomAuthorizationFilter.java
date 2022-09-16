@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2022 David "SnowNation" Zhang
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License
+ *  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ *  or implied. See the License for the specific language governing permissions and limitations under
+ *  the License.
+ */
+
+
 package com.bupt.starmap.filter;
 
 import com.auth0.jwt.JWT;
@@ -26,6 +41,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * Authorization filter class, do filter for any request and give them
+ * authorities to access specific api
+ * @author David Zhang
+ * @version 1.0
+ */
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
   @Override
@@ -51,7 +72,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
           SecurityContextHolder.getContext().setAuthentication(authenticationToken);
           filterChain.doFilter(request, response);
         } catch (Exception exception) {
-          log.error("Error logging in: {}", exception.getMessage());
+          log.error("Error accessing api: {}", exception.getMessage());
           response.setHeader("error", exception.getMessage());
           response.setStatus(FORBIDDEN.value());
           Map<String, String> error = new HashMap<>();

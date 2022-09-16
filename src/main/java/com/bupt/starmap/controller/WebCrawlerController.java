@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2022 David "SnowNation" Zhang
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License
+ *  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ *  or implied. See the License for the specific language governing permissions and limitations under
+ *  the License.
+ */
+
 package com.bupt.starmap.controller;
 
 import com.bupt.starmap.domain.WebCrawler;
@@ -18,6 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The main web crawler, crawling specific contents from {@code CSDN}
+ * @author Aijia Lei, David Zhang
+ * @version 1.0
+ */
 @Slf4j
 @RequestMapping("/api")
 @RestController
@@ -25,6 +44,10 @@ public class WebCrawlerController {
   @Autowired
   WebCrawlerRepo webCrawlerRepo;
 
+  /**
+   * Crawl from {@code CSDN}
+   * @param q question needed
+   */
   @GetMapping("/crawl")
   public void crawl(@RequestBody String q) {
 
@@ -46,7 +69,6 @@ public class WebCrawlerController {
     HashMap<String, Object> command = new HashMap<>();
     command.put("source", "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
     chromeDriver.executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", command);
-    // 防反爬end
 
     String url = "https://www.csdn.net/";
     chromeDriver.get(url);

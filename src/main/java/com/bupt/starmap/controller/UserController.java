@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2022 David "SnowNation" Zhang
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License
+ *  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ *  or implied. See the License for the specific language governing permissions and limitations under
+ *  the License.
+ */
+
 package com.bupt.starmap.controller;
 
 import com.auth0.jwt.JWT;
@@ -28,9 +42,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * The User Controller, including apis for adding roles to users
+ * @author David Zhang
+ * @version 1.0
+ */
 @RolesAllowed("ROLE_USER")
 @RestController
 @RequestMapping("/api")
@@ -39,13 +58,21 @@ public class UserController {
   private final UserService userService;
   private final RoleRepo roleRepo;
 
-  // Get all user information
+  /**
+   * Get all users from database, now used for test
+   * Later can be accessed by admin user
+   * @return List of all users
+   */
   @GetMapping("/user/get/all")
   public ResponseEntity<List<User>> getUsers() {
     return ResponseEntity.ok().body(userService.getUsers());
   }
 
-  // Register (save new user)
+  /**
+   * Register a new user(save a new user to the database)
+   * @param userRegisterRequest
+   * @return The user info
+   */
   @PostMapping("/user/register")
   public ResponseEntity<User> saveUser(@RequestBody UserRegisterRequest userRegisterRequest) {
     User user = new User(
@@ -53,6 +80,7 @@ public class UserController {
         userRegisterRequest.getNickname(),
         userRegisterRequest.getPassword(),
         LocalDate.now(),
+        "",
         "",
         new ArrayList<>()
     );
@@ -64,28 +92,47 @@ public class UserController {
   }
 
 
-  // Get current user info
+  /**
+   * Get user info of current login user
+   * @return current login user
+   */
   @GetMapping("/user/get")
   public ResponseEntity<User> getUser() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.ok().body(userService.getUser(username));
   }
 
-  // Update user profile
+  /**
+   * Update user info of current login user
+   * @param request
+   * @return Current user revised info
+   */
   @PostMapping("/user/update")
   public ResponseEntity<User> updateUser(@RequestBody UserUpdateRequest request) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userService.getUser(username);
-    user.setNickname(request.getNickname());
-    user.setPassword(request.getPassword());
-    user.setDob(request.getDob());
-    user.setPhoneNo(request.getPhoneNo());
     URI uri = URI.create(ServletUriComponentsBuilder
         .fromCurrentContextPath().path("/api/user/update").toUriString());
-    return ResponseEntity.created(uri).body(userService.saveUser(user));
+    return ResponseEntity.created(uri).body(userService.upadateUser(request, username));
   }
 
-  // Save new role
+  /**
+   * Change password, not used for now
+   * @param password
+   * @return new password
+   */
+  @PostMapping("/user/change/password")
+  public ResponseEntity<String> changePassword(@RequestParam String password) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    URI uri = URI.create(ServletUriComponentsBuilder
+        .fromCurrentContextPath().path("/api/user/change/password").toUriString());
+    return ResponseEntity.created(uri).body(userService.changePassword(password, username));
+  }
+
+  /**
+   * Save a role to the role table
+   * @param role
+   * @return
+   */
   @PostMapping("/role/save")
   public ResponseEntity<Role> saveRole(@RequestBody Role role) {
     URI uri = URI.create(ServletUriComponentsBuilder
@@ -93,14 +140,23 @@ public class UserController {
     return ResponseEntity.created(uri).body(userService.saveRole(role));
   }
 
-  // Add role to user
+  /**
+   * Add role to current user, the role must from the role table
+   * @param form
+   * @return
+   */
   @PostMapping("/role/to/user")
   public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
     userService.addRoleToUser(form.getUsername(), form.getRoleName());
     return ResponseEntity.ok().build();
   }
 
-  // Refresh token
+  /**
+   * Refresh token
+   * @param request
+   * @param response
+   * @throws IOException
+   */
   @GetMapping("/token/refresh")
   public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -128,7 +184,7 @@ public class UserController {
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
       } catch (Exception exception) {
         response.setHeader("error", exception.getMessage());
-        response.setStatus(FORBIDDEN.value());
+        response.setStatus(UNAUTHORIZED.value());
         Map<String, String> error = new HashMap<>();
         error.put("error_message", exception.getMessage());
         response.setContentType(APPLICATION_JSON_VALUE);

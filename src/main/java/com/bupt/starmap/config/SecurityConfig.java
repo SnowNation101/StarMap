@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2022 David "SnowNation" Zhang
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License
+ *  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ *  or implied. See the License for the specific language governing permissions and limitations under
+ *  the License.
+ */
+
 package com.bupt.starmap.config;
 
 import com.bupt.starmap.filter.CustomAuthenticationFilter;
@@ -24,6 +38,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+/**
+ * The Spring Security configuration
+ * @author David Zhang
+ * @version 1.0
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -51,17 +70,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement().sessionCreationPolicy(STATELESS);
     http
         .authorizeRequests()
-//        .antMatchers("/").permitAll()
-//        .antMatchers("/api/user/register", "/api/logout").permitAll()
-//        .antMatchers("/api/login/**", "/api/token/refresh/**", "index").permitAll()
-//        .antMatchers("api/**").hasAnyAuthority("ROLE_USER")
-//        .antMatchers(GET, "api/user/**").hasAnyAuthority("ROLE_USER")
-//        .antMatchers(POST, "api/user/save/**").hasAnyAuthority("ROLE_USER")
-//        .antMatchers(POST, "/starmap").permitAll()
-//        .antMatchers(POST, "/api/user/save").permitAll()
-//        .antMatchers("/api/users").hasAnyAuthority("ROLE_USER")
-        .antMatchers("/**").permitAll()
-//        .antMatchers("/api/user/save").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**").permitAll()
+        .antMatchers("/api/user/get/all").permitAll()
+        .antMatchers("/api/user/register").permitAll()
+        .antMatchers("/api/user/**", "/api/role/**").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/api/note/**").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/api/node/**").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/api/crawl").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/login","/api/login","/api/token/refresh","/api/logout").permitAll()
         .anyRequest().authenticated()
         .and()
         .addFilter(customAuthenticationFilter)
