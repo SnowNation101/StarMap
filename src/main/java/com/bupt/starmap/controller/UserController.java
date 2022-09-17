@@ -21,9 +21,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bupt.starmap.controller.utils.RoleToUserForm;
 import com.bupt.starmap.controller.utils.UserRegisterRequest;
 import com.bupt.starmap.controller.utils.UserUpdateRequest;
+import com.bupt.starmap.domain.Node;
 import com.bupt.starmap.domain.Role;
 import com.bupt.starmap.domain.User;
+import com.bupt.starmap.repo.NodeRepo;
 import com.bupt.starmap.repo.RoleRepo;
+import com.bupt.starmap.repo.UserRepo;
 import com.bupt.starmap.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +59,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class UserController {
   private final UserService userService;
+  private final UserRepo userRepo;
   private final RoleRepo roleRepo;
+  private final NodeRepo nodeRepo;
 
   /**
    * Get all users from database, now used for test
@@ -71,10 +76,13 @@ public class UserController {
   /**
    * Register a new user(save a new user to the database)
    * @param userRegisterRequest
-   * @return The user info
+   * @return Boolean, true for success register
    */
   @PostMapping("/user/register")
-  public ResponseEntity<User> saveUser(@RequestBody UserRegisterRequest userRegisterRequest) {
+  public Boolean saveUser(@RequestBody UserRegisterRequest userRegisterRequest) {
+    if (userRepo.existsUserByUsername(userRegisterRequest.getUsername())) {
+      return false;
+    }
     User user = new User(
         userRegisterRequest.getUsername(),
         userRegisterRequest.getNickname(),
@@ -86,9 +94,14 @@ public class UserController {
     );
     Role role = roleRepo.findByName("ROLE_USER");
     user.getRoles().add(role);
-    URI uri = URI.create(ServletUriComponentsBuilder
-        .fromCurrentContextPath().path("/api/user/register").toUriString());
-    return ResponseEntity.created(uri).body(userService.saveUser(user));
+    userService.saveUser(user);
+    Node node = new Node();
+    node.setNodeId(0L);
+    node.setUsername(userRegisterRequest.getUsername());
+    node.setParentId(114514L);
+    node.setValue("根节点");
+    nodeRepo.save(node);
+    return true;
   }
 
 

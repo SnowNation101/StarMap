@@ -23,7 +23,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,10 +46,11 @@ public class WebCrawlerController {
 
   /**
    * Crawl from {@code CSDN}
-   * @param q question needed
+   * @param q The question
+   * @return List of crawled results
    */
-  @GetMapping("/crawl")
-  public void crawl(@RequestBody String q) {
+  @PostMapping("/crawl")
+  public List<WebCrawler> crawl(@RequestBody String q) {
 
     System.getProperties().setProperty("webdriver.chrome.driver", "./src/main/resources/chromedriver.exe");
     System.out.println("准备实例化ChromeOpen类");
@@ -74,7 +75,7 @@ public class WebCrawlerController {
     chromeDriver.get(url);
 
     try {
-      Thread.sleep(3000);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -98,7 +99,7 @@ public class WebCrawlerController {
 
     chromeDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS); // 隐式等待页面加载完毕
     try {
-      Thread.sleep(3000);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -107,7 +108,7 @@ public class WebCrawlerController {
     WebElement hot = chromeDriver.findElement(By.className("sort")).findElement(By.className("hot"));
     hot.click();
     try {
-      Thread.sleep(3000);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -152,16 +153,17 @@ public class WebCrawlerController {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      if (webCrawlerRepo.count() == 20) break;
+      if (webCrawlerRepo.count() == 8) break;
     }
 
-    try {
-      Thread.sleep(3000);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+//    try {
+//      Thread.sleep(3000);
+//    } catch (InterruptedException e) {
+//      throw new RuntimeException(e);
+//    }
     log.info("Web crawling finished");
     chromeDriver.quit();
+    return webCrawlerRepo.findAll();
   }
 
 
@@ -175,5 +177,6 @@ public class WebCrawlerController {
       return false;
     }
   }
+
 }
 
