@@ -118,7 +118,6 @@ public class WebCrawlerController {
 
     //删除原表的数据
     webCrawlerRepo.deleteAll();
-
     for (WebElement article : articleCards) {
       WebElement a = article.findElement(By.cssSelector("h3 a"));
       String text = a.getText();
